@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
+
+contract HFVToken is ERC20, Ownable {
+    address public constant mfAddress = 0x9caAfb42977C70f5496174930fe2AD1e8436cd22;
+    address public constant psfAddress = 0x74b6E88C895f7398304A04508D91f8f48ce11768;
+
+    uint256 public constant TOTAL_SUPPLY = 70_000_000 * 10 ** 18;
+    uint256 public constant FEE_PERCENT = 2;
+
+    constructor() ERC20("HFV Token", "HFV") Ownable(msg.sender) {
+        uint256 psfAmount = (TOTAL_SUPPLY * 15) / 100;
+        uint256 ownerAmount = TOTAL_SUPPLY - psfAmount;
+
+        _mint(psfAddress, psfAmount);
+        _mint(msg.sender, ownerAmount);
+    }
+
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        address sender = _msgSender();
+        require(balanceOf(sender) >= amount, "Insufficient balance");
+
+        uint256 fee = (amount * FEE_PERCENT) / 100;
+        uint256 netAmount = amount - fee;
+
+        _transfer(sender, mfAddress, fee);
+        _transfer(sender, recipient, netAmount);
+
+        return true;
+    }
+
+    function withdrawFromPSF(uint256 amount) external onlyOwner {
+        require(balanceOf(psfAddress) >= amount, "Insufficient PSF balance");
+        _transfer(psfAddress, msg.sender, amount);
+    }
+}
