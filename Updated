@@ -1,3 +1,5 @@
+
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
@@ -5,8 +7,8 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 
 contract HFVToken is ERC20, Ownable {
-    address public constant mfAddress = 0x9caAfb42977C70f5496174930fe2AD1e8436cd22;
-    address public constant psfAddress = 0x74b6E88C895f7398304A04508D91f8f48ce11768;
+    address public constant mfAddress = 0x52Fdde70Dd44A201836AFBc13190345af1703E44;
+    address public constant psfAddress = 0x28666e861b1efD9a9aACBfAe8A7Bc13fB9E7F992;
 
     uint256 public constant TOTAL_SUPPLY = 70_000_000 * 10 ** 18;
     uint256 public constant FEE_PERCENT = 2;
@@ -37,3 +39,4 @@ contract HFVToken is ERC20, Ownable {
         _transfer(psfAddress, msg.sender, amount);
     }
 }
+
